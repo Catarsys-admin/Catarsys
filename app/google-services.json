@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "131439523289",
+    "firebase_url": "https://catarsys-be3bd.firebaseio.com",
+    "project_id": "catarsys-be3bd",
+    "storage_bucket": "catarsys-be3bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131439523289:android:7c10e3d99311a9a5",
+        "android_client_info": {
+          "package_name": "com.ar.catarsys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131439523289-bpi15ct1i7bauct915tur7r16a74dthu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ar.catarsys",
+            "certificate_hash": "ad212f0990b4d22ab2e1b31bcfb7ef1d1e825c35"
+          }
+        },
+        {
+          "client_id": "131439523289-kepn4fjemkc2eir3nosf12pklvi93fm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArYyoMJGhX1KwhmEmiuW-MLeJjEOjT4Yw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131439523289-kepn4fjemkc2eir3nosf12pklvi93fm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,17 +3,31 @@ package com.ar.catarsys;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +46,9 @@ public class Inicio extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-
-
+    private StorageReference mStorageRef;
+    private FirebaseAuth mAuth;
+    private String lastAudio;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -59,7 +74,9 @@ public class Inicio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
-
+        mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        logIn("test@test.com", "tester");
         mTextMessage = (TextView) findViewById(R.id.message);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -102,7 +119,8 @@ public class Inicio extends AppCompatActivity {
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(output_formats[currentFormat]);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(getFilename());
+        lastAudio = getFilename();
+        recorder.setOutputFile(lastAudio);
         recorder.setOnErrorListener(errorListener);
         recorder.setOnInfoListener(infoListener);
 
@@ -149,5 +167,52 @@ public class Inicio extends AppCompatActivity {
 
             recorder = null;
         }
+
+        uploadFile ("snd/test/test.3gp");
+    }
+
+    private void uploadFile (String filName){
+
+        Uri file = Uri.fromFile(new File(lastAudio));
+        StorageReference riversRef = mStorageRef.child(filName);
+
+        riversRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                         exception.getMessage();
+                    }
+                });
+    }
+
+    private void logIn (String email, String password){
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                           // Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                          //  updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                          //  Log.w(TAG, "signInWithEmail:failure", task.getException());
+                          /*  Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                           updateUI(null);
+                           */
+                        }
+
+                        // ...
+                    }
+                });
     }
 }
