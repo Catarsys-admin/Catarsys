@@ -49,7 +49,7 @@ public class Inicio extends AppCompatActivity {
     private StorageReference mStorageRef;
     private FirebaseAuth mAuth;
     private String lastAudio;
-
+    private FirebaseUser cUser;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -75,11 +75,10 @@ public class Inicio extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
         mAuth = FirebaseAuth.getInstance();
+        logIn("mariothomas@hotmail.com ", "123456");
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        logIn("test@test.com", "tester");
         mTextMessage = (TextView) findViewById(R.id.message);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Button recButton = findViewById(R.id.recButton);
@@ -172,10 +171,8 @@ public class Inicio extends AppCompatActivity {
     }
 
     private void uploadFile (String filName){
-
         Uri file = Uri.fromFile(new File(lastAudio));
         StorageReference riversRef = mStorageRef.child(filName);
-
         riversRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -201,18 +198,25 @@ public class Inicio extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                            // Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                          //  updateUI(user);
+                            updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                           //  Log.w(TAG, "signInWithEmail:failure", task.getException());
                           /*  Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                           updateUI(null);
+
                            */
+                            task.getException();
+                            updateUI(null);
                         }
 
                         // ...
                     }
                 });
     }
+
+    private void updateUI(FirebaseUser user) {
+        cUser = user;
+    }
+
 }
