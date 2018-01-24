@@ -75,7 +75,7 @@ public class Inicio extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
         mAuth = FirebaseAuth.getInstance();
-        logIn("mariothomas@hotmail.com ", "123456");
+        logIn("mariothomas@hotmail.com", "123456");
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mTextMessage = (TextView) findViewById(R.id.message);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
